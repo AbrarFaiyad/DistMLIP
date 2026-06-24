@@ -31,10 +31,11 @@ pip install --no-cache-dir \
     ase pymatgen torchmetrics torch-ema matscipy opt-einsum-fx \
     prettytable python-hostlist configargparse h5py tqdm lmdb orjson
 
-# mace-torch pin: 0.3.16 (matches Auto-Finetuner verified Aurora pin)
-# NOTE: DistMLIP pyproject pins commit e4d0a4e35; smoke-test 0.3.16 first.
-echo "==> installing mace-torch 0.3.16 + e3nn 0.4.4 (no deps)"
-pip install --no-deps "mace-torch==0.3.16"
+# mace-torch pin: DistMLIP-required commit e4d0a4e35 (0.3.16 has incompatible
+# MACECalculator._create_result_tensors signature)
+echo "==> installing mace-torch (DistMLIP-pinned commit) + e3nn 0.4.4 (no deps)"
+pip uninstall -y mace-torch 2>/dev/null || true
+pip install --no-deps "git+https://github.com/ACEsuit/mace.git@e4d0a4e35f7d41bca83374e22b4f03adf3cd98e0"
 pip install --no-deps "e3nn==0.4.4"
 
 echo "==> applying DistMLIP Aurora patches"
