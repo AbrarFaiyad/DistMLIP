@@ -29,7 +29,7 @@ source "${VENV}/bin/activate"
 echo "==> pip-installing leaf deps"
 pip install --no-cache-dir \
     ase pymatgen torchmetrics torch-ema matscipy opt-einsum-fx \
-    prettytable python-hostlist configargparse h5py tqdm
+    prettytable python-hostlist configargparse h5py tqdm lmdb orjson
 
 # mace-torch pin: 0.3.16 (matches Auto-Finetuner verified Aurora pin)
 # NOTE: DistMLIP pyproject pins commit e4d0a4e35; smoke-test 0.3.16 first.
