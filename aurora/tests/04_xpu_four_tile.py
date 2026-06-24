@@ -9,7 +9,8 @@ import sys
 import numpy as np
 
 
-def build_cell(supercell=(8, 8, 8)):
+def build_cell(supercell=(14, 14, 14)):
+    # 3.5 A * 14 = 49 A per side; / 4 partitions = 12.25 A wall (> 12 A required).
     from pymatgen.core import Structure, Lattice
     from pymatgen.io.ase import AseAtomsAdaptor
 

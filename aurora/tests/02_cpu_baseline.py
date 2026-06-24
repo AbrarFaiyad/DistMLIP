@@ -19,7 +19,8 @@ def build_cell():
         [[0, 0, 0], [0.5, 0.5, 0.5]]
     )
     struct.perturb(0.05, seed=42)
-    struct.make_supercell((3, 3, 3))
+    # Same supercell as test 3 (must be large enough for n_partitions=2 wall constraint)
+    struct.make_supercell((8, 8, 8))
     return AseAtomsAdaptor().get_atoms(struct)
 
 

@@ -19,7 +19,9 @@ def build_cell():
         [[0, 0, 0], [0.5, 0.5, 0.5]]
     )
     struct.perturb(0.05, seed=42)
-    struct.make_supercell((3, 3, 3))
+    # cell must be large enough that partition wall > 2 * atom_cutoff (6 A).
+    # 3.5 A * 8 = 28 A per side; / 2 partitions = 14 A wall (> 12 A required).
+    struct.make_supercell((8, 8, 8))
     return AseAtomsAdaptor().get_atoms(struct)
 
 
