@@ -73,27 +73,29 @@ def run_dist(base, atoms, n_tiles, label):
 
 
 def benchmark_strong(base):
-    """Strong scaling: fixed 148k atom cell across 2/6/12 tiles.
-    Cell side 147 A satisfies 12-partition wall constraint."""
+    """Strong scaling: fixed 148k atom cell across 6/12 tiles.
+    Cell side 147 A is the MIN that satisfies 12-partition wall constraint
+    (3.5 A * sc / 12 > 12 A => sc >= 42). At this cell size per-tile memory
+    exceeds 64 GB at <=4 tiles (OOM in MACE conv_tp einsum)."""
     print("=" * 60)
-    print("(A) STRONG SCALING -- fixed 148k atom cell")
+    print("(A) STRONG SCALING -- fixed 148k atom cell, 6 vs 12 tiles")
     print("=" * 60)
     atoms = build_cell((42, 42, 42))
     print(f"atoms: {len(atoms)}")
     print()
 
     results = {}
-    for n in (2, 6, 12):
+    for n in (6, 12):
         print(f"---- {n} tiles")
         results[n] = run_dist(base, atoms, n, f"strong_{n}t")
         print()
 
-    t2 = results[2]
-    print(f"{'tiles':>5} {'time_s':>8} {'speedup_vs_2t':>14} {'efficiency_vs_2t':>16}")
-    for n in (2, 6, 12):
+    t6 = results[6]
+    print(f"{'tiles':>5} {'time_s':>8} {'speedup_vs_6t':>14} {'efficiency_vs_6t':>16}")
+    for n in (6, 12):
         t = results[n]
-        spd = t2 / t if t > 0 else 0.0
-        eff = spd / (n / 2)
+        spd = t6 / t if t > 0 else 0.0
+        eff = spd / (n / 6)
         print(f"{n:>5} {t:>8.3f} {spd:>13.2f}x {eff:>15.1%}")
 
 
