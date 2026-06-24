@@ -121,6 +121,33 @@ partition. For MACE small (cutoff=6 Å, 2×cutoff=12 Å):
 
 Smaller cells trigger `RuntimeError: Partition walls are too close`.
 
+## Benchmark (1/2/6/12 tiles, MACE small, Li-Mn perovskite)
+
+### Strong scaling — 148k atoms fixed
+
+| tiles | min wall (s) | speedup vs 6t | efficiency |
+|---|---|---|---|
+| 6  | 7.55 | 1.00× | 100% |
+| 12 | 7.28 | 1.04× | **52%** |
+
+≤ 4 tiles OOM at this cell (per-tile memory > 64 GB).
+
+### Weak scaling — ~12k atoms/tile
+
+| tiles | atoms | time (s) | atoms/s | atoms/s/tile |
+|---|---|---|---|---|
+| 1  | 13,718 | 1.04 | 13,228 | **13,228** |
+| 2  | 27,648 | 1.64 | 16,885 | 8,442 |
+| 6  | 85,750 | 4.45 | 19,264 | 3,211 |
+| 12 | 148,176 | 7.36 | 20,132 | 1,678 |
+
+Per-tile throughput collapses 8× from 1→12 tiles. DistMLIP is
+**communication-bound on XPU**; `Distributed.aggregate` cross-tile
+copies (Level Zero, likely host-bounced) dominate over MACE compute.
+
+**Use DistMLIP when**: single-tile OOMs (problem doesn't fit 64 GB).
+**Use plain MACECalculator(device="xpu") when**: it fits.
+
 ## Known caveats
 
 - `mace-torch` is pinned to `0.3.16` (Auto-Finetuner's tested Aurora pin), not
