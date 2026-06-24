@@ -45,6 +45,11 @@ qsub aurora/jobs/smoke_xpu.sh      # tests 1-4 (~25 min)
 qsub aurora/jobs/smoke_12tile.sh   # test 5: full node (~45 min)
 ```
 
+Test 1 verifies imports + 12 tiles visible. Test 2 saves CPU baseline. Test 3
+runs the **minimum supported partition count = 2** (DistMLIP's C kernel rejects
+n_partitions=1, see `subgraph_creation_utils.c:49`). Tests 4 + 5 scale to 4
+and 12 tiles.
+
 ## Usage
 
 ```python

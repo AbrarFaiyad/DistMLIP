@@ -26,15 +26,15 @@ echo "EXIT_2=${RC}"
 [ ${RC} -ne 0 ] && exit ${RC}
 
 echo
-echo "==== TEST 3: xpu single tile"
-python aurora/tests/03_xpu_single_tile.py
+echo "==== TEST 3: xpu two tile (min partitions = 2)"
+python aurora/tests/03_xpu_two_tile.py
 RC=$?
 echo "EXIT_3=${RC}"
 [ ${RC} -ne 0 ] && exit ${RC}
 
 echo
-echo "==== TEST 4: xpu two tile"
-python aurora/tests/04_xpu_two_tile.py
+echo "==== TEST 4: xpu four tile"
+python aurora/tests/04_xpu_four_tile.py
 RC=$?
 echo "EXIT_4=${RC}"
 exit ${RC}
