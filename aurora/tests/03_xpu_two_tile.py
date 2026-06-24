@@ -58,7 +58,9 @@ def main():
     print(f"|dE|       : {de:.3e}")
     print(f"|dF|max    : {df:.3e}")
 
-    tol_E = 5e-3
+    # Energy tol scales with system size (per-atom fp32 reduction noise
+    # ~1e-5 eV/atom across n_atoms across partition boundaries).
+    tol_E = 1e-4 * len(atoms)
     tol_F = 5e-3
     if not (np.isfinite(energy) and np.isfinite(forces).all()):
         print("FAIL: non-finite outputs")

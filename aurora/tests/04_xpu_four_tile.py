@@ -59,8 +59,9 @@ def main():
     if not (np.isfinite(e4) and np.isfinite(f4).all()):
         print("FAIL: non-finite")
         return 1
-    if de > 5e-3 or df > 5e-3:
-        print("FAIL: 4-tile diverges from 2-tile beyond tol")
+    tol_E = 1e-4 * len(atoms)
+    if de > tol_E or df > 5e-3:
+        print(f"FAIL: 4-tile diverges from 2-tile beyond tol (E_tol={tol_E:.3e})")
         return 1
     print("PASS")
     return 0
