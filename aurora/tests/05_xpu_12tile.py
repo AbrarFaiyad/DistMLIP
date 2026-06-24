@@ -9,7 +9,8 @@ import time
 import numpy as np
 
 
-def build_cell(supercell=(20, 20, 20)):
+def build_cell(supercell=(42, 42, 42)):
+    # 3.5 A * 42 = 147 A per side; / 12 partitions = 12.25 A wall (> 2*cutoff=12 A)
     from pymatgen.core import Structure, Lattice
     from pymatgen.io.ase import AseAtomsAdaptor
 
