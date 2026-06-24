@@ -148,6 +148,11 @@ copies (Level Zero, likely host-bounced) dominate over MACE compute.
 **Use DistMLIP when**: single-tile OOMs (problem doesn't fit 64 GB).
 **Use plain MACECalculator(device="xpu") when**: it fits.
 
+`ZE_ENABLE_PEER_ACCESS=1` was tested and gave no measurable improvement
+(<2% noise). The bottleneck is in DistMLIP's aggregate path (PyTorch
+allocator memcpy), not raw L0 P2P. Real fix would need oneCCL
+collectives + compute/comm overlap — out of scope for this port.
+
 ## Known caveats
 
 - `mace-torch` is pinned to `0.3.16` (Auto-Finetuner's tested Aurora pin), not

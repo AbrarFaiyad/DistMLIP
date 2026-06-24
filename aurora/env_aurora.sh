@@ -16,9 +16,10 @@ export ONEAPI_DEVICE_SELECTOR="${ONEAPI_DEVICE_SELECTOR:-level_zero:gpu}"
 export ZE_FLAT_DEVICE_HIERARCHY="${ZE_FLAT_DEVICE_HIERARCHY:-FLAT}"
 export ZE_ENABLE_PCI_ID_DEVICE_ORDER=1
 export MPICH_GPU_SUPPORT_ENABLED=1
-# Try Level Zero peer access for direct xpu<->xpu transfers
-# (DistMLIP.Distributed.aggregate currently bottlenecks on host-bounced copies)
-export ZE_ENABLE_PEER_ACCESS="${ZE_ENABLE_PEER_ACCESS:-1}"
+# ZE_ENABLE_PEER_ACCESS=1 tested -- no measurable improvement on Aurora PVC
+# (DistMLIP.aggregate goes through PyTorch allocator, not raw L0 P2P).
+# Bottleneck is in DistMLIP code, not platform: would need oneCCL collectives
+# + compute/comm overlap. Out of scope for this port.
 
 # C ext threading (find_points_in_spheres + subgraph_creation_fast OpenMP)
 export DISTMLIP_NUM_THREADS="${DISTMLIP_NUM_THREADS:-8}"
