@@ -92,6 +92,35 @@ export MPICH_GPU_SUPPORT_ENABLED=1
 All patches idempotent via `# AURORA-PATCHED` marker. Re-running
 `aurora/patch_distmlip_for_aurora.py` is safe.
 
+## Verified results
+
+Aurora Sapphire Rapids node, frameworks/2025.3.1, mace-torch
+@e4d0a4e35, single Python process, 1 node:
+
+| test | atoms | tiles | result |
+|---|---|---|---|
+| 1 import | -- | -- | `torch.xpu.device_count() == 12` |
+| 2 cpu baseline | 1024 | cpu | E=-5054.78 eV, F_max=0.065 eV/Å |
+| 3 two-tile | 1024 | 2 | vs cpu: \|dE\|=4.7e-2 eV, \|dF\|=1.4e-6 |
+| 4 four-tile | 5488 | 4 | vs 2-tile: \|dE\|=1.4e-2 eV, \|dF\|=5.1e-7 |
+| 5 12-tile | **148,176** | 12 | E=-732,271 eV, forward 27.2 s |
+
+Energy drift across partition counts is fp32 reduction noise
+(~1e-5 eV/atom across partition boundaries). Forces agree to ≤2e-6 eV/Å.
+
+## Cell size requirement (DistMLIP C kernel)
+
+The partition algorithm enforces `wall_width > 2 × atom_cutoff` per
+partition. For MACE small (cutoff=6 Å, 2×cutoff=12 Å):
+
+| n_partitions | min cell side |
+|---|---|
+| 2 | 24 Å (~7³ Li-Mn) |
+| 4 | 48 Å (~14³) |
+| 12 | 144 Å (~42³ = 148k atoms) |
+
+Smaller cells trigger `RuntimeError: Partition walls are too close`.
+
 ## Known caveats
 
 - `mace-torch` is pinned to `0.3.16` (Auto-Finetuner's tested Aurora pin), not
