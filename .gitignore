@@ -178,3 +178,4 @@ cython_debug/
 
 # Benchmarking folder
 /benchmarking
+graphify-out/
